@@ -1,6 +1,6 @@
-import React, { Component, useEffect, useState } from "react";
-import styled from "styled-components";
-import { Plane } from "./Plane";
+import React, { Component } from 'react';
+import styled from 'styled-components';
+import { Plane } from './Plane';
 
 const Area = styled.div`
   height: 100%;
@@ -18,7 +18,7 @@ const GameArea = styled.div`
   overflow: hidden;
 `;
 
-const TICK_RATE = 20;
+const TICK_RATE = 200;
 
 type GameState = {
   timestamp: number;
@@ -36,7 +36,7 @@ enum GameStatus {
   GAME_ON = 0,
   GAME_OVER = 1,
   GAME_WIN = 2,
-  GAME_PAUSED = 3
+  GAME_PAUSED = 3,
 }
 
 export type GameProps = {
@@ -58,7 +58,7 @@ export class Game extends Component<GameProps, GameState> {
       impacts: 0,
       currentLevel: 0,
       difficulty: 0,
-      gameStatus: GameStatus.GAME_ON
+      gameStatus: GameStatus.GAME_ON,
     };
   }
   interval = 0;
@@ -81,7 +81,11 @@ export class Game extends Component<GameProps, GameState> {
     return (
       <Area>
         <GameArea>
-          <Plane {...this.props} diff={this.diff} stamp={this.state.timestamp} />
+          <Plane
+            {...this.props}
+            diff={this.diff}
+            stamp={this.state.timestamp}
+          />
         </GameArea>
       </Area>
     );
