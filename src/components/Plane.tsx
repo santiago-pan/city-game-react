@@ -1,12 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import planeImage from './../assets/images/ic_plane_f21.png';
+import plane from './../assets/images/ic_plane_f21.png';
 import { GameProps } from './Game';
 
 // Config
 
 const SPEED = 400;
-const PLANE_WIDTH = 120;
+const PLANE_WIDTH = 80;
 const DOWN_SPEED = 10;
 
 // Styled components
@@ -21,7 +21,6 @@ const PlaneStyle = styled.img<PlaneAreaProps>`
   width: ${PLANE_WIDTH}px;
   height: auto;
   object-fit: contain;
-  background: yellow;
 `;
 
 const PlaneStyleAttr = styled(PlaneStyle).attrs((props: any) => ({
@@ -39,14 +38,13 @@ type PlaneProps = GameProps & {
   cityWidth: number;
 };
 
-export const Plane = (props: PlaneProps) => {
+export function Plane(props: PlaneProps) {
+  const { x, y } = useDraw(props);
 
-  const { x, y } = usePosition(props);
+  return <PlaneStyleAttr src={plane} x={x} y={y} />;
+}
 
-  return <PlaneStyleAttr src={planeImage} x={x} y={y} />;
-};
-
-function usePosition({ cityWidth, diff, stamp }: PlaneProps) {
+function useDraw({ cityWidth, diff, stamp }: PlaneProps) {
   const cityHalfSize = useRef(cityWidth / 2 + PLANE_WIDTH / 2);
   const x = useRef(-cityHalfSize.current);
   const y = useRef(0);

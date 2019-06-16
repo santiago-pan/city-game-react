@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { Plane } from './Plane';
+import { City } from './City';
+import { ImagesType } from '../utils/Images';
 
 const Area = styled.div`
   height: 100%;
@@ -18,7 +20,7 @@ const GameArea = styled.div`
   overflow: hidden;
 `;
 
-const TICK_RATE = 100;
+const TICK_RATE = 1000;
 
 type GameState = {
   timestamp: number;
@@ -28,11 +30,11 @@ type GameState = {
   firePowerRelease: number;
   impacts: number;
   currentLevel: number;
-  difficulty: number;
-  gameStatus: GameStatus;
+  status: GameStatus;
 };
 
 enum GameStatus {
+  GAME_LOADING = -1,
   GAME_ON = 0,
   GAME_OVER = 1,
   GAME_WIN = 2,
@@ -40,9 +42,11 @@ enum GameStatus {
 }
 
 export type GameProps = {
+  images: ImagesType;
   frameRate: number;
   cityWidth: number;
   cityHeight: number;
+  difficulty: number;
 };
 
 export function Game(props: GameProps) {
@@ -54,8 +58,7 @@ export function Game(props: GameProps) {
     firePowerRelease: 0,
     impacts: 0,
     currentLevel: 0,
-    difficulty: 0,
-    gameStatus: GameStatus.GAME_ON,
+    status: GameStatus.GAME_ON,
   });
 
   const diff = useRef(0);
@@ -77,6 +80,12 @@ export function Game(props: GameProps) {
     <Area>
       <GameArea>
         <Plane {...props} diff={diff.current} stamp={gameState.timestamp} />
+        <City
+          {...props}
+          buildingWidth={72}
+          images={props.images}
+          difficulty={props.difficulty}
+        />
       </GameArea>
     </Area>
   );
