@@ -20,7 +20,7 @@ const GameArea = styled.div`
   overflow: hidden;
 `;
 
-const TICK_RATE = 1000;
+const TICK_RATE = 10;
 
 type GameState = {
   timestamp: number;

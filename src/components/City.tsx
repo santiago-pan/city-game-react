@@ -34,14 +34,14 @@ export function City(props: CityProps) {
   const x = useRef(cityStartX.current);
   const y = useRef(window.innerHeight - props.cityHeight);
 
-  const buildingA = getBuilding(props.difficulty, props.images);
-  const buildingB = getBuilding(props.difficulty, props.images);
+  const buildingA = useRef(getBuilding(props.difficulty, props.images));
+  const buildingB = useRef(getBuilding(props.difficulty, props.images));
   
   // TODO: Move building to its own component and build city mapping through buildins.
   return (
     <div>
-      {buildingA.map((floor, index) => {
-        const floorHeight = getFloorHeight(buildingA, index) * factor.current;
+      {buildingA.current.map((floor, index) => {
+        const floorHeight = getFloorHeight(buildingA.current, index) * factor.current;
         return (
           <FloorStyleAttr
             key={index}
@@ -52,8 +52,8 @@ export function City(props: CityProps) {
           />
         );
       })}
-      {buildingB.map((floor, index) => {
-        const floorHeight = getFloorHeight(buildingB, index) * factor.current;
+      {buildingB.current.map((floor, index) => {
+        const floorHeight = getFloorHeight(buildingB.current, index) * factor.current;
         return (
           <FloorStyleAttr
             key={index}
