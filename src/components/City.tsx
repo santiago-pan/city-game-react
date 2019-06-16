@@ -1,27 +1,7 @@
 import React, { useRef } from 'react';
-import styled from 'styled-components';
-import { GameProps } from './Game';
 import { ImagesType } from '../utils/Images';
-
-type FloorAreaProps = {
-  x: number;
-  y: number;
-  buildingWidth: number;
-};
-
-const FloorStyle = styled.img<FloorAreaProps>`
-  position: absolute;
-  width: ${props => props.buildingWidth}px;
-  height: auto;
-  object-fit: contain;
-`;
-
-const FloorStyleAttr = styled(FloorStyle).attrs((props: FloorAreaProps) => ({
-  style: {
-    bottom: `${props.y}px`,
-    left: `${props.x}px`,
-  },
-}))``;
+import { Building } from './Building';
+import { GameProps } from './Game';
 
 type CityProps = GameProps & {
   images: ImagesType;
@@ -29,38 +9,21 @@ type CityProps = GameProps & {
 };
 
 export function City(props: CityProps) {
-  const factor = useRef(props.buildingWidth / 84);
   const cityStartX = useRef(window.innerWidth / 2 - props.cityWidth / 2);
   const x = useRef(cityStartX.current);
   const y = useRef(window.innerHeight - props.cityHeight);
-
-  const buildingA = useRef(getBuilding(props.difficulty, props.images));
-  const buildingB = useRef(getBuilding(props.difficulty, props.images));
-  
-  // TODO: Move building to its own component and build city mapping through buildins.
+  const numberOfBuildings = useRef(
+    getNumberOfBuildings(props.cityWidth, props.buildingWidth),
+  );
   return (
     <div>
-      {buildingA.current.map((floor, index) => {
-        const floorHeight = getFloorHeight(buildingA.current, index) * factor.current;
+      {numberOfBuildings.current.map((_, index: number) => {
         return (
-          <FloorStyleAttr
-            key={index}
-            src={floor.src}
+          <Building
+            {...props}
             x={x.current}
-            y={y.current + floorHeight}
-            buildingWidth={props.buildingWidth}
-          />
-        );
-      })}
-      {buildingB.current.map((floor, index) => {
-        const floorHeight = getFloorHeight(buildingB.current, index) * factor.current;
-        return (
-          <FloorStyleAttr
-            key={index}
-            src={floor.src}
-            x={x.current + props.buildingWidth}
-            y={y.current + floorHeight}
-            buildingWidth={props.buildingWidth}
+            y={y.current}
+            buildingIndex={index}
           />
         );
       })}
@@ -68,31 +31,7 @@ export function City(props: CityProps) {
   );
 }
 
-const randomItemIndex = (numItems: number) =>
-  Math.floor(Math.random() * numItems);
-
-const getRandomItem = (items: { [key: string]: HTMLImageElement }) =>
-  Object.values(items)[randomItemIndex(Object.keys(items).length)];
-
-const getBuilding = (
-  difficulty: number,
-  images: ImagesType,
-): HTMLImageElement[] => {
-  const roof = getRandomItem(images.roofs);
-  const basement = getRandomItem(images.basements);
-  const floor = getRandomItem(images.floors);
-  const numFloors = randomItemIndex(difficulty) + 1;
-  const floors = Array(numFloors).fill(floor);
-  return [basement, ...floors, roof];
-};
-
-const getFloorHeight = (
-  building: HTMLImageElement[],
-  index: number,
-): number => {
-  let height = 0;
-  for (let i = 0; i < index; i++) {
-    height += building[i].height;
-  }
-  return height;
-};
+const getNumberOfBuildings = (
+  cityWidth: number,
+  buildingWidth: number,
+): number[] => Array(Math.floor(cityWidth / buildingWidth)).fill(0);
