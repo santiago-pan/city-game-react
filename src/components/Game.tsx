@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { Plane } from './Plane';
 
@@ -18,7 +18,7 @@ const GameArea = styled.div`
   overflow: hidden;
 `;
 
-const TICK_RATE = 200;
+const TICK_RATE = 100;
 
 type GameState = {
   timestamp: number;
@@ -45,49 +45,39 @@ export type GameProps = {
   cityHeight: number;
 };
 
-export class Game extends Component<GameProps, GameState> {
-  constructor(props: any) {
-    super(props);
+export function Game(props: GameProps) {
+  const [gameState, setGameState] = useState<GameState>({
+    timestamp: +new Date(),
+    shots: 0,
+    points: 0,
+    totalPoints: 0,
+    firePowerRelease: 0,
+    impacts: 0,
+    currentLevel: 0,
+    difficulty: 0,
+    gameStatus: GameStatus.GAME_ON,
+  });
 
-    this.state = {
-      timestamp: +new Date(),
-      shots: 0,
-      points: 0,
-      totalPoints: 0,
-      firePowerRelease: 0,
-      impacts: 0,
-      currentLevel: 0,
-      difficulty: 0,
-      gameStatus: GameStatus.GAME_ON,
+  const diff = useRef(0);
+
+  useEffect(() => {
+    let interval = 0;
+    const onTick = () => {
+      const timestamp = +new Date();
+      diff.current = timestamp - gameState.timestamp;
+      setGameState({ ...gameState, timestamp: +new Date() });
     };
-  }
-  interval = 0;
-  diff = 0;
-  onTick = () => {
-    const timestamp = +new Date();
-    this.diff = timestamp - this.state.timestamp;
-    this.setState({ timestamp: +new Date() });
-  };
 
-  componentDidMount() {
-    this.interval = setInterval(this.onTick, TICK_RATE);
-  }
+    interval = setInterval(onTick, TICK_RATE);
 
-  componentWillUnmount() {
-    clearInterval(this.interval);
-  }
+    return () => clearInterval(interval);
+  }, [gameState]);
 
-  render() {
-    return (
-      <Area>
-        <GameArea>
-          <Plane
-            {...this.props}
-            diff={this.diff}
-            stamp={this.state.timestamp}
-          />
-        </GameArea>
-      </Area>
-    );
-  }
+  return (
+    <Area>
+      <GameArea>
+        <Plane {...props} diff={diff.current} stamp={gameState.timestamp} />
+      </GameArea>
+    </Area>
+  );
 }
