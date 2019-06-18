@@ -1,20 +1,26 @@
+import React from 'react';
 import images from './../assets/images';
 
-export type ImagesType = {
-  roofs: { [key: string]: HTMLImageElement };
-  floors: { [key: string]: HTMLImageElement };
-  basements: { [key: string]: HTMLImageElement };
-  planes: { [key: string]: HTMLImageElement };
-  greens: { [key: string]: HTMLImageElement };
+export const GameImagesContext = React.createContext<GameImages>({} as any);
+
+type ImagesSet = { [key: string]: HTMLImageElement };
+
+export type GameImages = {
+  roofs: ImagesSet;
+  floors: ImagesSet;
+  basements: ImagesSet;
+  planes: ImagesSet;
+  greens: ImagesSet;
+  explosions: ImagesSet;
 };
 
-async function Images(): Promise<ImagesType> {
-  
+async function Images(): Promise<GameImages> {
   const roofs = await loadRoofs();
   const floors = await loadFloors();
   const basements = await loadBasements();
   const planes = await loadPlanes();
   const greens = await loadGreenBuildings();
+  const explosions = await loadExplosions();
 
   async function loadRoofs() {
     return {
@@ -62,6 +68,14 @@ async function Images(): Promise<ImagesType> {
     };
   }
 
+  async function loadExplosions() {
+    return {
+      EXPLOSION_1: await loadImage(images.ic_explosion_1),
+      EXPLOSION_2: await loadImage(images.ic_explosion_2),
+      EXPLOSION_3: await loadImage(images.ic_explosion_3),
+    };
+  }
+
   function loadImage(src: string): Promise<HTMLImageElement> {
     return new Promise(resolve => {
       const image = new Image();
@@ -72,7 +86,7 @@ async function Images(): Promise<ImagesType> {
     });
   }
 
-  return { roofs, floors, basements, planes, greens };
+  return { roofs, floors, basements, planes, greens, explosions };
 }
 
 export default Images;

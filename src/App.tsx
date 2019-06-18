@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
 import { Game } from './components/Game';
-import Images, { ImagesType } from './utils/Images';
+import Images, { GameImages, GameImagesContext } from './utils/Images';
 
 function App() {
-  const images = useRef<ImagesType | undefined>(undefined);
+  const images = useRef<GameImages>({} as any);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -19,15 +19,16 @@ function App() {
   return (
     <div className="App">
       {loaded && (
-        <Game
-          {...{
-            images: images.current as ImagesType,
-            frameRate: 25,
-            cityWidth: 800,
-            cityHeight: 480,
-            difficulty: 3,
-          }}
-        />
+        <GameImagesContext.Provider value={images.current}>
+          <Game
+            {...{
+              frameRate: 25,
+              cityWidth: 800,
+              cityHeight: 480,
+              difficulty: 3,
+            }}
+          />
+        </GameImagesContext.Provider>
       )}
     </div>
   );

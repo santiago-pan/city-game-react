@@ -1,10 +1,8 @@
 import React, { useRef } from 'react';
-import { ImagesType } from '../utils/Images';
 import { Building } from './Building';
 import { GameProps } from './Game';
 
 type CityProps = GameProps & {
-  images: ImagesType;
   buildingWidth: number;
 };
 
@@ -20,6 +18,7 @@ export function City(props: CityProps) {
       {numberOfBuildings.current.map((_, index: number) => {
         return (
           <Building
+            key={index}
             {...props}
             x={x.current}
             y={y.current}

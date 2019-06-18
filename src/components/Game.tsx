@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Plane } from './Plane';
 import { City } from './City';
-import { ImagesType } from '../utils/Images';
+import { Plane } from './Plane';
 
 const Area = styled.div`
   height: 100%;
@@ -42,7 +41,6 @@ enum GameStatus {
 }
 
 export type GameProps = {
-  images: ImagesType;
   frameRate: number;
   cityWidth: number;
   cityHeight: number;
@@ -80,12 +78,7 @@ export function Game(props: GameProps) {
     <Area>
       <GameArea>
         <Plane {...props} diff={diff.current} stamp={gameState.timestamp} />
-        <City
-          {...props}
-          buildingWidth={72}
-          images={props.images}
-          difficulty={props.difficulty}
-        />
+        <City {...props} buildingWidth={42} difficulty={props.difficulty} />
       </GameArea>
     </Area>
   );
