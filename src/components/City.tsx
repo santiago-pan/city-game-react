@@ -7,9 +7,7 @@ type CityProps = GameProps & {
 };
 
 export function City(props: CityProps) {
-  const cityStartX = useRef(window.innerWidth / 2 - props.cityWidth / 2);
-  const x = useRef(cityStartX.current);
-  const y = useRef(window.innerHeight - props.cityHeight);
+  const { x, y } = usePosition(props.cityWidth, props.cityHeight);
   const numberOfBuildings = useRef(
     getNumberOfBuildings(props.cityWidth, props.buildingWidth),
   );
@@ -34,3 +32,10 @@ const getNumberOfBuildings = (
   cityWidth: number,
   buildingWidth: number,
 ): number[] => Array(Math.floor(cityWidth / buildingWidth)).fill(0);
+
+function usePosition(cityWidth: number, cityHeight: number) {
+  const cityStartX = useRef(window.innerWidth / 2 - cityWidth / 2);
+  const x = useRef(cityStartX.current);
+  const y = useRef(window.innerHeight - cityHeight);
+  return { x, y };
+}

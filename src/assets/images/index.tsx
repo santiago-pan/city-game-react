@@ -24,6 +24,10 @@ import ic_plane_type_c from './ic_plane_type_c.png';
 import ic_green_church from './ic_green_church.png';
 import ic_green_hospital from './ic_green_hospital.png';
 import ic_green_school from './ic_green_school.png';
+// Explosion
+import ic_explosion_1 from './ic_explosion_1.png';
+import ic_explosion_2 from './ic_explosion_2.png';
+import ic_explosion_3 from './ic_explosion_3.png';
 
 const images = {
   // Roofs
@@ -52,6 +56,10 @@ const images = {
   ic_green_church,
   ic_green_hospital,
   ic_green_school,
+  // Explosion
+  ic_explosion_1,
+  ic_explosion_2,
+  ic_explosion_3,
 };
 
 export default images;

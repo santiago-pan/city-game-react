@@ -5,17 +5,17 @@ import { GameImages, GameImagesContext } from '../utils/Images';
 type FloorAreaProps = {
   x: number;
   y: number;
-  buildingWidth: number;
+  width: number;
 };
 
-const FloorStyle = styled.img<FloorAreaProps>`
+const FloorImageStyle = styled.img<FloorAreaProps>`
   position: absolute;
-  width: ${props => props.buildingWidth}px;
+  width: ${props => props.width}px;
   height: auto;
   object-fit: contain;
 `;
 
-const FloorStyleAttr = styled(FloorStyle).attrs((props: FloorAreaProps) => ({
+const FloorStyle = styled(FloorImageStyle).attrs((props: FloorAreaProps) => ({
   style: {
     bottom: `${props.y}px`,
     left: `${props.x}px`,
@@ -61,11 +61,25 @@ export function Building(props: BuildingProps) {
     };
   }
 
-  function randomFloorIndex(numFloors: number) {
-    return Math.floor(Math.random() * numFloors);
-  }
+  return (
+    <div>
+      {building.current.map((floor, index) => {
+        const floorHeight = getFloorHeight(building.current, index);
+        return (
+          <FloorStyle
+            key={index}
+            src={floor.img.src}
+            x={props.x + props.buildingWidth * props.buildingIndex}
+            y={props.y + floorHeight}
+            width={props.buildingWidth}
+          />
+        );
+      })}
+    </div>
+  );
+}
 
-  function getFloorHeight(building: Floor[], index: number): number {
+function getFloorHeight(building: Floor[], index: number): number {
     let height = 0;
     for (let i = 0; i < index; i++) {
       height += building[i].height;
@@ -73,20 +87,6 @@ export function Building(props: BuildingProps) {
     return height;
   }
 
-  return (
-    <div>
-      {building.current.map((floor, index) => {
-        const floorHeight = getFloorHeight(building.current, index);
-        return (
-          <FloorStyleAttr
-            key={index}
-            src={floor.img.src}
-            x={props.x + props.buildingWidth * props.buildingIndex}
-            y={props.y + floorHeight}
-            buildingWidth={props.buildingWidth}
-          />
-        );
-      })}
-    </div>
-  );
-}
+  function randomFloorIndex(numFloors: number) {
+    return Math.floor(Math.random() * numFloors);
+  }

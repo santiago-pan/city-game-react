@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { City } from './City';
 import { Plane } from './Plane';
+import { Explosion } from './Explosion';
 
 const Area = styled.div`
   height: 100%;
@@ -19,7 +20,7 @@ const GameArea = styled.div`
   overflow: hidden;
 `;
 
-const TICK_RATE = 10;
+const TICK_RATE = 100;
 
 type GameState = {
   timestamp: number;
@@ -79,6 +80,7 @@ export function Game(props: GameProps) {
       <GameArea>
         <Plane {...props} diff={diff.current} stamp={gameState.timestamp} />
         <City {...props} buildingWidth={42} difficulty={props.difficulty} />
+        <Explosion {...props} />
       </GameArea>
     </Area>
   );

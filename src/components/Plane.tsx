@@ -9,8 +9,6 @@ const SPEED = 400;
 const PLANE_WIDTH = 80;
 const DOWN_SPEED = 10;
 
-// Styled components
-
 type PlaneAreaProps = {
   x: number;
   y: number;
@@ -30,8 +28,6 @@ const PlaneStyleAttr = styled(PlaneStyle).attrs((props: any) => ({
   },
 }))``;
 
-// Logic
-
 type PlaneProps = GameProps & {
   diff: number;
   stamp: number;
@@ -45,9 +41,7 @@ export function Plane(props: PlaneProps) {
 }
 
 function useDraw({ cityWidth, diff, stamp }: PlaneProps) {
-  const cityHalfSize = useRef(cityWidth / 2 + PLANE_WIDTH / 2);
-  const x = useRef(-cityHalfSize.current);
-  const y = useRef(0);
+  const { x, y, cityHalfSize } = usePosition(cityWidth);
 
   useEffect(() => {
     const displacement = (diff / 1000) * SPEED;
@@ -60,4 +54,11 @@ function useDraw({ cityWidth, diff, stamp }: PlaneProps) {
   }, [stamp, diff]);
 
   return { x: x.current, y: y.current };
+}
+
+function usePosition(cityWidth: number) {
+  const cityHalfSize = useRef(cityWidth / 2 + PLANE_WIDTH / 2);
+  const x = useRef(-cityHalfSize.current);
+  const y = useRef(0);
+  return { x, y, cityHalfSize };
 }
