@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useEffect } from 'react';
+import React, { useContext, useRef } from 'react';
 import styled from 'styled-components';
 import { GameImages, GameImagesContext } from '../utils/Images';
 import { GameProps } from './Game';
@@ -53,12 +53,7 @@ export function Explosion(props: ExplosionProps) {
   const frames = NUM_FRAMES;
   const width = totalWidth / frames;
 
-  useEffect(() => {
-    frame.current++;
-    if (frame.current > NUM_FRAMES) {
-      frame.current = 0;
-    }
-  });
+  frame.current = updateExplosion(frame.current);
 
   return (
     <ExplosionStyle x={x.current} y={y.current} width={width}>
@@ -70,6 +65,14 @@ export function Explosion(props: ExplosionProps) {
       />
     </ExplosionStyle>
   );
+}
+
+function updateExplosion(frame: number) {
+  frame++;
+  if (frame > NUM_FRAMES) {
+    frame = 0;
+  }
+  return frame;
 }
 
 function usePosition(cityWidth: number, cityHeight: number) {

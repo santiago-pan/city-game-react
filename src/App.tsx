@@ -22,7 +22,7 @@ function App() {
         <GameImagesContext.Provider value={images.current}>
           <Game
             {...{
-              frameRate: 25,
+              frameRate: 25,              
               cityWidth: 800,
               cityHeight: 480,
               difficulty: 3,

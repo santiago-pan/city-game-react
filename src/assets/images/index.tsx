@@ -28,6 +28,10 @@ import ic_green_school from './ic_green_school.png';
 import ic_explosion_1 from './ic_explosion_1.png';
 import ic_explosion_2 from './ic_explosion_2.png';
 import ic_explosion_3 from './ic_explosion_3.png';
+// Bomb
+import ic_bomb_1 from './ic_bomb_1.png';
+import ic_bomb_2 from './ic_bomb_2.png';
+import ic_bomb_3 from './ic_bomb_3.png';
 
 const images = {
   // Roofs
@@ -60,6 +64,10 @@ const images = {
   ic_explosion_1,
   ic_explosion_2,
   ic_explosion_3,
+  // Bombs
+  ic_bomb_1,
+  ic_bomb_2,
+  ic_bomb_3,
 };
 
 export default images;

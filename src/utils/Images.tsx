@@ -12,6 +12,7 @@ export type GameImages = {
   planes: ImagesSet;
   greens: ImagesSet;
   explosions: ImagesSet;
+  bombs: ImagesSet;
 };
 
 async function Images(): Promise<GameImages> {
@@ -21,6 +22,7 @@ async function Images(): Promise<GameImages> {
   const planes = await loadPlanes();
   const greens = await loadGreenBuildings();
   const explosions = await loadExplosions();
+  const bombs = await loadBombs();
 
   async function loadRoofs() {
     return {
@@ -76,6 +78,14 @@ async function Images(): Promise<GameImages> {
     };
   }
 
+  async function loadBombs() {
+    return {
+      BOMB_1: await loadImage(images.ic_bomb_1),
+      BOMB_2: await loadImage(images.ic_bomb_2),
+      BOMB_3: await loadImage(images.ic_bomb_3),
+    };
+  }
+
   function loadImage(src: string): Promise<HTMLImageElement> {
     return new Promise(resolve => {
       const image = new Image();
@@ -86,7 +96,7 @@ async function Images(): Promise<GameImages> {
     });
   }
 
-  return { roofs, floors, basements, planes, greens, explosions };
+  return { roofs, floors, basements, planes, greens, explosions, bombs };
 }
 
 export default Images;

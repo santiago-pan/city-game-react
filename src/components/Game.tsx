@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { City } from './City';
 import { Plane } from './Plane';
 import { Explosion } from './Explosion';
+import Bomb from './Bomb';
 
 const Area = styled.div`
   height: 100%;
@@ -20,7 +21,7 @@ const GameArea = styled.div`
   overflow: hidden;
 `;
 
-const TICK_RATE = 100;
+const TICK_RATE = 50;
 
 type GameState = {
   timestamp: number;
@@ -60,14 +61,15 @@ export function Game(props: GameProps) {
     status: GameStatus.GAME_ON,
   });
 
-  const diff = useRef(0);
+  const frameDiff = useRef(0);
 
   useEffect(() => {
     let interval = 0;
+    
     const onTick = () => {
       const timestamp = +new Date();
-      diff.current = timestamp - gameState.timestamp;
       setGameState({ ...gameState, timestamp: +new Date() });
+      frameDiff.current = timestamp - gameState.timestamp;
     };
 
     interval = setInterval(onTick, TICK_RATE);
@@ -78,9 +80,10 @@ export function Game(props: GameProps) {
   return (
     <Area>
       <GameArea>
-        <Plane {...props} diff={diff.current} stamp={gameState.timestamp} />
+        <Plane {...props} frameDiff={frameDiff.current} />
         <City {...props} buildingWidth={42} difficulty={props.difficulty} />
         <Explosion {...props} />
+        <Bomb {...props} frameDiff={frameDiff.current} initX={0} initY={0} type="bomb1"/>
       </GameArea>
     </Area>
   );

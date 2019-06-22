@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import plane from './../assets/images/ic_plane_f21.png';
 import { GameProps } from './Game';
 
-// Config
+// Plane configuration
 
 const SPEED = 400;
 const PLANE_WIDTH = 80;
@@ -29,36 +29,27 @@ const PlaneStyleAttr = styled(PlaneStyle).attrs((props: any) => ({
 }))``;
 
 type PlaneProps = GameProps & {
-  diff: number;
-  stamp: number;
+  frameDiff: number;
   cityWidth: number;
 };
 
 export function Plane(props: PlaneProps) {
-  const { x, y } = useDraw(props);
+  const { x, y } = usePosition(props);
 
   return <PlaneStyleAttr src={plane} x={x} y={y} />;
 }
 
-function useDraw({ cityWidth, diff, stamp }: PlaneProps) {
-  const { x, y, cityHalfSize } = usePosition(cityWidth);
+function usePosition({ cityWidth, frameDiff }: PlaneProps) {
+  const x = useRef(-PLANE_WIDTH);
+  const y = useRef(0);
 
-  useEffect(() => {
-    const displacement = (diff / 1000) * SPEED;
-    if (x.current > cityHalfSize.current) {
-      y.current = y.current + DOWN_SPEED;
-      x.current = -cityHalfSize.current;
-    } else {
-      x.current = x.current + displacement;
-    }
-  }, [stamp, diff]);
+  const displacement = (frameDiff / 1000) * SPEED;
+  if (x.current > cityWidth + PLANE_WIDTH) {
+    y.current = y.current + DOWN_SPEED;
+    x.current = -PLANE_WIDTH;
+  } else {
+    x.current = x.current + displacement;
+  }
 
   return { x: x.current, y: y.current };
-}
-
-function usePosition(cityWidth: number) {
-  const cityHalfSize = useRef(cityWidth / 2 + PLANE_WIDTH / 2);
-  const x = useRef(-cityHalfSize.current);
-  const y = useRef(0);
-  return { x, y, cityHalfSize };
 }
