@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import plane from './../assets/images/ic_plane_f21.png';
 import { GameProps } from './Game';
