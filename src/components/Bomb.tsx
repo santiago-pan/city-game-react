@@ -83,7 +83,7 @@ function usePosition(
   const rotation = useRef(0);
 
   rotation.current++;
-  x.current+=5;
+  x.current += 5;
 
   if (y.current < cityHeight) {
     time.current += frameDiff / 1000;
@@ -94,7 +94,7 @@ function usePosition(
     speed.current = BOMB_INITIAL_SPEED;
     time.current = 0;
     rotation.current = 0;
-    x.current = 0
+    x.current = 0;
   }
 
   return { x: x.current, y: y.current, rotation: rotation.current };
