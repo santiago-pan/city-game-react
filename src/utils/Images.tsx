@@ -1,7 +1,26 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import images from './../assets/images';
 
 export const GameImagesContext = React.createContext<GameImages>({} as any);
+
+export function ImagesProvider({ children }: { children: JSX.Element }) {
+  const images = useRef<GameImages>({} as any);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    if (loaded === false) {
+      (async () => {
+        images.current = await Images();
+        setLoaded(true);
+      })();
+    }
+  });
+  return (
+    <GameImagesContext.Provider value={images.current}>
+      {loaded && children}
+    </GameImagesContext.Provider>
+  );
+}
 
 type ImagesSet = { [key: string]: HTMLImageElement };
 
@@ -98,5 +117,3 @@ async function Images(): Promise<GameImages> {
 
   return { roofs, floors, basements, planes, greens, explosions, bombs };
 }
-
-export default Images;
