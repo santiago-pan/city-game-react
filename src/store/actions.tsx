@@ -1,3 +1,5 @@
+import { IBomb } from "../components/Bomb";
+
 export type Action<P = any> = {
   type: string;
   payload: P;
@@ -9,5 +11,5 @@ export const Type = {
   AddScore: 'AddScore',
 };
 
-export type AddBomb = Action<{ id: string; bomb: any }>;
-export type RemoveBomb = Action<{ id: string; bombId: string }>;
+export type AddBomb = Action<IBomb>;
+export type RemoveBomb = Action<{ id: string }>;

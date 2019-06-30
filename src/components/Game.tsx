@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { City } from './City';
-import { Plane } from './Plane';
-import { Explosion } from './Explosion';
+import { useStore } from '../store/store';
 import Bomb from './Bomb';
+import { City } from './City';
+import { Explosion } from './Explosion';
+import { Plane } from './Plane';
 
 const Area = styled.div`
   height: 100%;
@@ -50,6 +51,8 @@ export type GameProps = {
 };
 
 export function Game(props: GameProps) {
+  const store = useStore();
+
   const [gameState, setGameState] = useState<GameState>({
     timestamp: +new Date(),
     shots: 0,
@@ -65,7 +68,7 @@ export function Game(props: GameProps) {
 
   useEffect(() => {
     let interval = 0;
-    
+
     const onTick = () => {
       const timestamp = +new Date();
       setGameState({ ...gameState, timestamp: +new Date() });
@@ -83,7 +86,16 @@ export function Game(props: GameProps) {
         <Plane {...props} frameDiff={frameDiff.current} />
         <City {...props} buildingWidth={42} difficulty={props.difficulty} />
         <Explosion {...props} />
-        <Bomb {...props} frameDiff={frameDiff.current} initX={0} initY={0} type="bomb1"/>
+        {Array.from(store.state.bombs.values()).map(bomb => {
+          return (
+            <Bomb
+              {...props}              
+              {...bomb}
+              key={bomb.id}
+              frameDiff={frameDiff.current}
+            />
+          );
+        })}
       </GameArea>
     </Area>
   );

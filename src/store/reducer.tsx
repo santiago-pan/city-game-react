@@ -1,10 +1,6 @@
 import { Action } from './actions';
 import * as Actions from './actions';
-
-export type IBomb = {
-  id: string;
-  type: string;
-};
+import { IBomb } from '../components/Bomb';
 
 export type IState = {
   bombs: Map<string, IBomb>;
@@ -26,12 +22,12 @@ export default function Reducer(state: IState = InitialState, action: Action): I
 
 function addBomb(state: IState, { payload }: Actions.AddBomb) {
   const bombs = new Map(state.bombs);
-  bombs.set(payload.id, payload.bomb);
+  bombs.set(payload.id, payload);
   return { ...state, bombs };
 }
 
 function removeBomb(state: IState, { payload }: Actions.RemoveBomb) {
   const bombs = new Map(state.bombs);
-  bombs.delete(payload.bombId);
+  bombs.delete(payload.id);
   return { ...state, bombs };
 }

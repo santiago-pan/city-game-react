@@ -31,22 +31,16 @@ const BombStyleAttr = styled(BombStyle).attrs((props: any) => ({
 const BOMB_ACCELERATION = 10;
 const BOMB_INITIAL_SPEED = 80;
 
-type BombType =
-  | {
-      type: 'bomb1';
-    }
-  | {
-      type: 'bomb2';
-    }
-  | {
-      type: 'bomb3';
-    };
-
-type BombProps = {
+export type IBomb = {
+  id: string;  
+  type: 'bomb1' | 'bomb2' | 'bomb3';
   initX: number;
   initY: number;
+};
+
+type BombProps = {  
   frameDiff: number;
-} & BombType &
+} & IBomb &
   GameProps;
 
 export default function Bomb(props: BombProps) {

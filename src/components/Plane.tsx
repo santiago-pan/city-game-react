@@ -1,7 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import uuidv1 from 'uuid/v1';
+import { useStore } from '../store/store';
 import plane from './../assets/images/ic_plane_f21.png';
 import { GameProps } from './Game';
+import { Type } from '../store/actions';
 
 // Plane configuration
 
@@ -34,7 +37,25 @@ type PlaneProps = GameProps & {
 };
 
 export function Plane(props: PlaneProps) {
+  const store = useStore();
+
   const { x, y } = usePosition(props);
+
+  useEffect(() => {
+    document.addEventListener('keypress', handleKeyPress);
+    return () => {
+      document.removeEventListener('keypress', handleKeyPress);
+    };
+  });
+
+  function handleKeyPress(event: any) {
+    if (event.code === 'Space') {
+      store.dispatch({
+        type: Type.AddBomb,
+        payload: { id: uuidv1(), type: 'bomb1', initX: x, initY: y },
+      });
+    }
+  }
 
   return <PlaneStyleAttr src={plane} x={x} y={y} />;
 }
