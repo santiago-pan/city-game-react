@@ -2,7 +2,7 @@ import React, { useContext, useReducer } from 'react';
 import { Action } from './actions';
 import reducer, { InitialState, IState } from './reducer';
 
-type StoreContextType = {
+export type StoreContextType = {
   state: IState;
   dispatch: React.Dispatch<Action<any>>;
 };

@@ -2,6 +2,8 @@ import React, { useContext, useRef } from 'react';
 import styled from 'styled-components';
 import { GameImagesContext } from '../utils/Images';
 import { GameProps } from './Game';
+import { useStore, StoreContextType } from '../store/store';
+import { Type } from '../store/actions';
 
 // Style
 
@@ -13,10 +15,10 @@ type BombAreaProps = {
 };
 
 const BombStyle = styled.img<BombAreaProps>`
-  position: relative;
+  position: absolute;
   width: ${props => props.width}px;
   height: auto;
-  object-fit: contain;
+  object-fit: contain; 
   transform: rotate(${props => props.rotation}deg);
 `;
 
@@ -38,17 +40,16 @@ export type IBomb = {
   initY: number;
 };
 
-type BombProps = {
-  frameDiff: number;
-} & IBomb &
-  GameProps;
+type BombProps = {} & IBomb & GameProps;
 
 export default function Bomb(props: BombProps) {
+  const store = useStore();
   const { x, y, rotation } = usePosition(
     props.initX,
     props.initY,
     props.cityHeight,
-    props.frameDiff,
+    store,
+    props.id,
   );
 
   const images = useContext(GameImagesContext);
@@ -68,27 +69,29 @@ function usePosition(
   initX: number,
   initY: number,
   cityHeight: number,
-  frameDiff: number,
+  store: StoreContextType,
+  id: string,
 ) {
-  const x = useRef(initX);
-  const y = useRef(initY);
+  const timeRef = useRef<number>(+new Date());
+  const x = useRef(initX+50);
+  const y = useRef(initY+20);
   const speed = useRef(BOMB_INITIAL_SPEED);
   const time = useRef(0);
   const rotation = useRef(0);
 
-  rotation.current++;
-  x.current += 5;
+  const currentTime = +new Date();
+  const frameDiff = currentTime - timeRef.current;
+  timeRef.current = currentTime;
+
+  rotation.current += 0.5;
+  x.current += 4;
 
   if (y.current < cityHeight) {
     time.current += frameDiff / 1000;
     speed.current += (BOMB_ACCELERATION * time.current ** 2) / 2;
     y.current += (speed.current * frameDiff) / 1000;
   } else {
-    y.current = 0;
-    speed.current = BOMB_INITIAL_SPEED;
-    time.current = 0;
-    rotation.current = 0;
-    x.current = 0;
+    store.dispatch({ type: Type.RemoveBomb, payload: { id } });
   }
 
   return { x: x.current, y: y.current, rotation: rotation.current };

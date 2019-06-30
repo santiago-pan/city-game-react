@@ -18,7 +18,7 @@ type PlaneAreaProps = {
 };
 
 const PlaneStyle = styled.img<PlaneAreaProps>`
-  position: relative;
+  position: absolute;
   width: ${PLANE_WIDTH}px;
   height: auto;
   object-fit: contain;
@@ -32,14 +32,13 @@ const PlaneStyleAttr = styled(PlaneStyle).attrs((props: any) => ({
 }))``;
 
 type PlaneProps = GameProps & {
-  frameDiff: number;
   cityWidth: number;
 };
 
 export function Plane(props: PlaneProps) {
   const store = useStore();
 
-  const { x, y } = usePosition(props);
+  const { x, y } = usePosition(props.cityWidth);
 
   useEffect(() => {
     document.addEventListener('keypress', handleKeyPress);
@@ -60,14 +59,21 @@ export function Plane(props: PlaneProps) {
   return <PlaneStyleAttr src={plane} x={x} y={y} />;
 }
 
-function usePosition({ cityWidth, frameDiff }: PlaneProps) {
-  const x = useRef(-PLANE_WIDTH);
+function usePosition(cityWidth: number) {
+  const planeStartX = useRef(window.innerWidth / 2 - cityWidth / 2 - PLANE_WIDTH);
+  const maxPlaneX = useRef(window.innerWidth / 2 + cityWidth / 2)
+  const x = useRef(planeStartX.current);
   const y = useRef(0);
+  const timeRef = useRef<number>(+new Date());
+
+  const currentTime = +new Date();
+  const frameDiff = currentTime - timeRef.current;
+  timeRef.current = currentTime;
 
   const displacement = (frameDiff / 1000) * SPEED;
-  if (x.current > cityWidth + PLANE_WIDTH) {
+  if (x.current > maxPlaneX.current) {
     y.current = y.current + DOWN_SPEED;
-    x.current = -PLANE_WIDTH;
+    x.current =  planeStartX.current;
   } else {
     x.current = x.current + displacement;
   }

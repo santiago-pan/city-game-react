@@ -2,6 +2,8 @@ import React, { useContext, useRef } from 'react';
 import styled from 'styled-components';
 import { GameImages, GameImagesContext } from '../utils/Images';
 
+const DEFAULT_BUILDING_WIDTH = 84;
+
 type FloorAreaProps = {
   x: number;
   y: number;
@@ -38,7 +40,7 @@ type Floor = {
 
 export function Building(props: BuildingProps) {
   const images = useContext<GameImages>(GameImagesContext);
-  const factor = useRef(props.buildingWidth / 84);
+  const factor = useRef(props.buildingWidth / DEFAULT_BUILDING_WIDTH);
   const building = useRef(getBuilding(props.difficulty));
 
   function getBuilding(difficulty: number): Floor[] {
@@ -80,13 +82,13 @@ export function Building(props: BuildingProps) {
 }
 
 function getFloorHeight(building: Floor[], index: number): number {
-    let height = 0;
-    for (let i = 0; i < index; i++) {
-      height += building[i].height;
-    }
-    return height;
+  let height = 0;
+  for (let i = 0; i < index; i++) {
+    height += building[i].height;
   }
+  return height;
+}
 
-  function randomFloorIndex(numFloors: number) {
-    return Math.floor(Math.random() * numFloors);
-  }
+function randomFloorIndex(numFloors: number) {
+  return Math.floor(Math.random() * numFloors);
+}

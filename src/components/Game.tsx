@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { useStore } from '../store/store';
 import Bomb from './Bomb';
@@ -22,7 +22,7 @@ const GameArea = styled.div`
   overflow: hidden;
 `;
 
-const TICK_RATE = 50;
+const TICK_RATE = 100;
 
 type GameState = {
   timestamp: number;
@@ -52,6 +52,7 @@ export type GameProps = {
 
 export function Game(props: GameProps) {
   const store = useStore();
+  const pauseGame = useRef(false);
 
   const [gameState, setGameState] = useState<GameState>({
     timestamp: +new Date(),
@@ -64,15 +65,13 @@ export function Game(props: GameProps) {
     status: GameStatus.GAME_ON,
   });
 
-  const frameDiff = useRef(0);
-
   useEffect(() => {
     let interval = 0;
 
     const onTick = () => {
-      const timestamp = +new Date();
-      setGameState({ ...gameState, timestamp: +new Date() });
-      frameDiff.current = timestamp - gameState.timestamp;
+      if (!pauseGame.current) {
+        setGameState({ ...gameState, timestamp: +new Date() });
+      }
     };
 
     interval = setInterval(onTick, TICK_RATE);
@@ -80,22 +79,30 @@ export function Game(props: GameProps) {
     return () => clearInterval(interval);
   }, [gameState]);
 
+  useEffect(() => {
+    document.addEventListener('keypress', handleKeyPress);
+    return () => {
+      document.removeEventListener('keypress', handleKeyPress);
+    };
+  });
+
+  function handleKeyPress(event: any) {
+        
+    if (event.code === 'KeyP') {
+      pauseGame.current = !pauseGame.current;
+      console.log(pauseGame.current);
+    }
+  }
+
   return (
     <Area>
       <GameArea>
-        <Plane {...props} frameDiff={frameDiff.current} />
+        <Plane {...props} />        
         <City {...props} buildingWidth={42} difficulty={props.difficulty} />
         <Explosion {...props} />
-        {Array.from(store.state.bombs.values()).map(bomb => {
-          return (
-            <Bomb
-              {...props}
-              {...bomb}
-              key={bomb.id}
-              frameDiff={frameDiff.current}
-            />
-          );
-        })}
+        {Array.from(store.state.bombs.values()).map(bomb => (
+          <Bomb {...props} {...bomb} key={bomb.id} />
+        ))}
       </GameArea>
     </Area>
   );

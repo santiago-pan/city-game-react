@@ -29,5 +29,7 @@ function addBomb(state: IState, { payload }: Actions.AddBomb) {
 function removeBomb(state: IState, { payload }: Actions.RemoveBomb) {
   const bombs = new Map(state.bombs);
   bombs.delete(payload.id);
+  console.log(bombs.size);
+  
   return { ...state, bombs };
 }
