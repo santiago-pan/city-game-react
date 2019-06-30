@@ -89,7 +89,7 @@ export function Game(props: GameProps) {
         {Array.from(store.state.bombs.values()).map(bomb => {
           return (
             <Bomb
-              {...props}              
+              {...props}
               {...bomb}
               key={bomb.id}
               frameDiff={frameDiff.current}
@@ -98,5 +98,5 @@ export function Game(props: GameProps) {
         })}
       </GameArea>
     </Area>
-  );
+  ); 
 }
