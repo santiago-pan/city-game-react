@@ -1,6 +1,6 @@
 import React, { useContext, useReducer } from 'react';
-import reducer, { InitialState, IState } from './reducer';
 import { Action } from './actions';
+import reducer, { InitialState, IState } from './reducer';
 
 type StoreContextType = {
   state: IState;

@@ -98,5 +98,5 @@ export function Game(props: GameProps) {
         })}
       </GameArea>
     </Area>
-  ); 
+  );
 }

@@ -32,13 +32,13 @@ const BOMB_ACCELERATION = 10;
 const BOMB_INITIAL_SPEED = 80;
 
 export type IBomb = {
-  id: string;  
+  id: string;
   type: 'bomb1' | 'bomb2' | 'bomb3';
   initX: number;
   initY: number;
 };
 
-type BombProps = {  
+type BombProps = {
   frameDiff: number;
 } & IBomb &
   GameProps;

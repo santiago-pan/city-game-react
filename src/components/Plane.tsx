@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import uuidv1 from 'uuid/v1';
+import { Type } from '../store/actions';
 import { useStore } from '../store/store';
 import plane from './../assets/images/ic_plane_f21.png';
 import { GameProps } from './Game';
-import { Type } from '../store/actions';
 
 // Plane configuration
 
