@@ -99,9 +99,12 @@ export function Game(props: GameProps) {
       <GameArea>
         <Plane {...props} />        
         <City {...props} buildingWidth={42} difficulty={props.difficulty} />
-        <Explosion {...props} />
+        {/* <Explosion {...props} /> */}
         {Array.from(store.state.bombs.values()).map(bomb => (
           <Bomb {...props} {...bomb} key={bomb.id} />
+        ))}
+        {Array.from(store.state.explosions.values()).map(explosion => (
+          <Explosion {...props} {...explosion} key={explosion.id} />
         ))}
       </GameArea>
     </Area>

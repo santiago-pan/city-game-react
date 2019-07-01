@@ -2,6 +2,8 @@ import React, { useContext, useRef } from 'react';
 import styled from 'styled-components';
 import { GameImages, GameImagesContext } from '../utils/Images';
 import { GameProps } from './Game';
+import { useStore, StoreContextType } from '../store/store';
+import { Type } from '../store/actions';
 
 type ExplosionAreaProps = {
   x: number;
@@ -10,7 +12,7 @@ type ExplosionAreaProps = {
 };
 
 const ExplosionImageStyle = styled.div<ExplosionAreaProps>`
-  position: fixed;
+  position: absolute;
   width: ${props => props.width}px;
   height: auto;
   object-fit: contain;
@@ -20,7 +22,7 @@ const ExplosionImageStyle = styled.div<ExplosionAreaProps>`
 const ExplosionStyle = styled(ExplosionImageStyle).attrs(
   (props: ExplosionAreaProps) => ({
     style: {
-      bottom: `${props.y}px`,
+      top: `${props.y}px`,
       left: `${props.x}px`,
     },
   }),
@@ -37,13 +39,26 @@ const ExplosionFrame = styled.img<ExplostionFrameProps>`
   transform: translate(${props => -1 * props.frame * props.width}px);
 `;
 
-type ExplosionProps = GameProps;
+export type IExplosion = {
+  id: string;
+  type: 'explosion1' | 'explosion2' | 'explosion3';
+  initX: number;
+  initY: number;
+};
+
+type ExplosionProps = IExplosion & GameProps;
 
 // TODO: Create type for explosion and set this values
 const NUM_FRAMES = 43;
 
 export function Explosion(props: ExplosionProps) {
-  const { x, y } = usePosition(props.cityWidth, props.cityHeight);
+  const store = useStore();
+  const { x, y } = usePosition(
+    props.initX,
+    props.initY,
+    props.cityWidth,
+    props.cityHeight,
+  );
   const frame = useRef(0);
   const images = useContext<GameImages>(GameImagesContext);
 
@@ -53,7 +68,7 @@ export function Explosion(props: ExplosionProps) {
   const frames = NUM_FRAMES;
   const width = totalWidth / frames;
 
-  frame.current = updateExplosion(frame.current);
+  frame.current = updateExplosion(store, props.id, frame.current);
 
   return (
     <ExplosionStyle x={x.current} y={y.current} width={width}>
@@ -67,17 +82,22 @@ export function Explosion(props: ExplosionProps) {
   );
 }
 
-function updateExplosion(frame: number) {
+function updateExplosion(store: StoreContextType, id: string, frame: number) {
   frame++;
-  if (frame > NUM_FRAMES) {
-    frame = 0;
+  if (frame > NUM_FRAMES) {    
+    store.dispatch({ type: Type.RemoveExplosion, payload: { id } });
   }
   return frame;
 }
 
-function usePosition(cityWidth: number, cityHeight: number) {
+function usePosition(
+  initX: number,
+  initY: number,
+  cityWidth: number,
+  cityHeight: number,
+) {
   const cityStartX = useRef(window.innerWidth / 2 - cityWidth / 2);
-  const x = useRef(cityStartX.current);
-  const y = useRef(window.innerHeight - cityHeight);
+  const x = useRef(initX);
+  const y = useRef(initY);
   return { x, y };
 }

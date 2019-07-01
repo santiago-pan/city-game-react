@@ -4,6 +4,7 @@ import { GameImagesContext } from '../utils/Images';
 import { GameProps } from './Game';
 import { useStore, StoreContextType } from '../store/store';
 import { Type } from '../store/actions';
+import uuidv1 from 'uuid/v1';
 
 // Style
 
@@ -18,7 +19,7 @@ const BombStyle = styled.img<BombAreaProps>`
   position: absolute;
   width: ${props => props.width}px;
   height: auto;
-  object-fit: contain; 
+  object-fit: contain;
   transform: rotate(${props => props.rotation}deg);
 `;
 
@@ -44,6 +45,7 @@ type BombProps = {} & IBomb & GameProps;
 
 export default function Bomb(props: BombProps) {
   const store = useStore();
+
   const { x, y, rotation } = usePosition(
     props.initX,
     props.initY,
@@ -73,26 +75,44 @@ function usePosition(
   id: string,
 ) {
   const timeRef = useRef<number>(+new Date());
-  const x = useRef(initX+50);
-  const y = useRef(initY+20);
+  const x = useRef(initX);
+  const y = useRef(initY);
   const speed = useRef(BOMB_INITIAL_SPEED);
-  const time = useRef(0);
+  const bombTime = useRef(0);
   const rotation = useRef(0);
 
   const currentTime = +new Date();
-  const frameDiff = currentTime - timeRef.current;
+  const frameDiff = (currentTime - timeRef.current) / 1000;
+
   timeRef.current = currentTime;
 
   rotation.current += 0.5;
-  x.current += 4;
+  x.current += 5;
 
-  if (y.current < cityHeight) {
-    time.current += frameDiff / 1000;
-    speed.current += (BOMB_ACCELERATION * time.current ** 2) / 2;
-    y.current += (speed.current * frameDiff) / 1000;
-  } else {
-    store.dispatch({ type: Type.RemoveBomb, payload: { id } });
+  bombTime.current += frameDiff;
+  speed.current += (BOMB_ACCELERATION * bombTime.current ** 2) / 2;
+  y.current += speed.current * frameDiff;
+
+  if (y.current > cityHeight) {
+    removeBoomb(store, id);
+    addExplosion(store, x.current, y.current);
   }
 
   return { x: x.current, y: y.current, rotation: rotation.current };
+}
+
+function removeBoomb(store: StoreContextType, id: string) {
+  store.dispatch({ type: Type.RemoveBomb, payload: { id } });
+}
+
+function addExplosion(store: StoreContextType, initX: number, initY: number) {
+  store.dispatch({
+    type: Type.AddExplosion,
+    payload: {
+      id: uuidv1(),
+      type: 'explosion1',
+      initX,
+      initY,
+    },
+  });
 }

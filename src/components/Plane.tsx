@@ -60,11 +60,14 @@ export function Plane(props: PlaneProps) {
 }
 
 function usePosition(cityWidth: number) {
-  const planeStartX = useRef(window.innerWidth / 2 - cityWidth / 2 - PLANE_WIDTH);
-  const maxPlaneX = useRef(window.innerWidth / 2 + cityWidth / 2)
+  const planeStartX = useRef(
+    window.innerWidth / 2 - cityWidth / 2 - PLANE_WIDTH,
+  );
+  const maxPlaneX = useRef(window.innerWidth / 2 + cityWidth / 2);
   const x = useRef(planeStartX.current);
   const y = useRef(0);
   const timeRef = useRef<number>(+new Date());
+  const explosion = useRef(false);
 
   const currentTime = +new Date();
   const frameDiff = currentTime - timeRef.current;
@@ -73,10 +76,10 @@ function usePosition(cityWidth: number) {
   const displacement = (frameDiff / 1000) * SPEED;
   if (x.current > maxPlaneX.current) {
     y.current = y.current + DOWN_SPEED;
-    x.current =  planeStartX.current;
+    x.current = planeStartX.current;
   } else {
-    x.current = x.current + displacement;
+    x.current = x.current + displacement;    
   }
 
-  return { x: x.current, y: y.current };
+  return { x: x.current, y: y.current, explosion: explosion.current };
 }
